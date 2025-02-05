@@ -1,9 +1,10 @@
 import React from "react";
+import ProductsScreen from "./Screens/ProductsScreen";
 
 function App() {
   return (
     <div>
-      <h1>Frontend</h1>
+      <ProductsScreen />
     </div>
   );
 }
