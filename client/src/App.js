@@ -1,11 +1,12 @@
 import React from "react";
 import ProductsScreen from "./Screens/ProductsScreen";
+import { Provider } from "./Components/ui/provider";
 
 function App() {
   return (
-    <div>
+    <Provider>
       <ProductsScreen />
-    </div>
+    </Provider>
   );
 }
 
