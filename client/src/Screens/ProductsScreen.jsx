@@ -1,21 +1,17 @@
 import { Box, Center, Wrap, WrapItem } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ProductsCards from "../Components/ProductsCards";
-import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import { getProduct } from "../lib/apis/ProductApi";
 
 const ProductsScreen = () => {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/products")
-      .then((response) => {
-        setData(response.data.products);
-      })
-      .catch((error) => {
-        console.error("Error occured : ", error);
-      });
-  }, []);
+  const { data = [], isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProduct,
+    retry: 2,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+  });
 
   return (
     <>
@@ -30,7 +26,7 @@ const ProductsScreen = () => {
             {data.map((product) => (
               <WrapItem key={product._id}>
                 <Center w={"250px"} h={"450px"}>
-                  <ProductsCards products={product} loading={false} />
+                  <ProductsCards products={product} loading={isLoading} />
                 </Center>
               </WrapItem>
             ))}
