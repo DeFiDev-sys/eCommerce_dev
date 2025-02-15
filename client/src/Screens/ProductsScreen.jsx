@@ -1,17 +1,26 @@
 import { Box, Center, Wrap, WrapItem } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import ProductsCards from "../Components/ProductsCards";
-import { useQuery } from "@tanstack/react-query";
-import { getProduct } from "../lib/apis/ProductApi";
+// import { useQuery } from "@tanstack/react-query";
+import { getProduct } from "../reduxs/actions/apis/ProductApi";
+import { useDispatch, useSelector } from "react-redux";
+import { ProductSelector } from "../reduxs/slices/Projects";
 
 const ProductsScreen = () => {
-  const { data = [], isLoading } = useQuery({
-    queryKey: ["products"],
-    queryFn: getProduct,
-    retry: 2,
-    staleTime: Infinity,
-    refetchOnWindowFocus: false,
-  });
+  // const { data = [], isLoading } = useQuery({
+  //   queryKey: ["products"],
+  //   queryFn: getProduct,
+  //   retry: 2,
+  //   staleTime: Infinity,
+  //   refetchOnWindowFocus: false,
+  // });
+  const dispatch = useDispatch();
+  const data = useSelector(ProductSelector);
+  const isLoading = useSelector((state) => state.products.loading);
+
+  useEffect(() => {
+    dispatch(getProduct());
+  }, [dispatch]);
 
   return (
     <>
