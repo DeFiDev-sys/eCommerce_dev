@@ -5,7 +5,6 @@ export const getProduct = (page, favouriteToggle) => async (dispatch) => {
   dispatch(setLoading());
   try {
     const { data } = await axios.get("http://localhost:5000/api/products");
-    console.log(data.products);
     const { products, pagination } = data;
     dispatch(setProducts(products));
     dispatch(setPagination(pagination));

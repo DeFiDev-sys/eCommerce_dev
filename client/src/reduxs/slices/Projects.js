@@ -37,4 +37,4 @@ export const { setLoading, setError, setProducts, setPagination } = ProductSlice
 
 export default ProductSlice.reducer;
 
-export const ProductSelector = (state) => state.products.products;
+export const ProductSelector = (state) => state.products;
