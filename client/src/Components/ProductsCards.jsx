@@ -11,8 +11,9 @@ const ProductsCards = ({ products, loading }) => {
         overflow={"hidden"}
         p='4'
         borderWidth={"1px"}
-        shadow={"md"}>
-        <Image />
+        shadow={"md"}
+        mx={"2"}>
+        <Image src={products.images[0]} alt={products.name} height={"200px"} />
         {products.stock < 5 ? (
           <Badge px={"2"} colorPalette={"yellow"}>
             only {products.stock} left
@@ -40,6 +41,10 @@ const ProductsCards = ({ products, loading }) => {
         <Badge px={"2"} colorPalette={"cyan"}>
           {products.category}
         </Badge>
+
+        <Text lineClamp={1} fontSize={"md"} fontWeight={"normal"} mt={"2"}>
+          {products.subtitle}
+        </Text>
 
         <Flex justify={"space-between"} gapX={"2"} alignItems={"center"} mt={"2"}>
           <IconButton color={"gray.900"} bgColor={"gray.100"} mt={"2"}>

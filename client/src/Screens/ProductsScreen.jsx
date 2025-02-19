@@ -4,7 +4,7 @@ import ProductsCards from "../Components/ProductsCards";
 // import { useQuery } from "@tanstack/react-query";
 import { getProduct } from "../reduxs/actions/apis/ProductApi";
 import { useDispatch, useSelector } from "react-redux";
-import { ProductSelector } from "../reduxs/slices/Projects";
+// import { ProductSelector } from "../reduxs/slices/Projects";
 
 const ProductsScreen = () => {
   // const { data = [], isLoading } = useQuery({
@@ -15,8 +15,9 @@ const ProductsScreen = () => {
   //   refetchOnWindowFocus: false,
   // });
   const dispatch = useDispatch();
-  const data = useSelector(ProductSelector);
-  const isLoading = useSelector((state) => state.products.loading);
+  // const data = useSelector(ProductSelector);
+  // const isLoading = useSelector((state) => state.products.loading);
+  const { products, loading } = useSelector((state) => state.products);
 
   useEffect(() => {
     dispatch(getProduct());
@@ -24,7 +25,7 @@ const ProductsScreen = () => {
 
   return (
     <>
-      {data.length > 1 && (
+      {products.length > 1 && (
         <Box>
           <Wrap
             spacing={"30px"}
@@ -32,10 +33,10 @@ const ProductsScreen = () => {
             my={"5"}
             minHeight={"fit"}
             mx={{ base: "1", sm: "12", md: "48", lg: "64" }}>
-            {data.map((product) => (
+            {products.map((product) => (
               <WrapItem key={product._id}>
                 <Center w={"250px"} h={"450px"}>
-                  <ProductsCards products={product} loading={isLoading} />
+                  <ProductsCards products={product} loading={loading} />
                 </Center>
               </WrapItem>
             ))}
