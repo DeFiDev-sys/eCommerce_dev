@@ -2,8 +2,14 @@ import { Box, Badge, Image, Text, Flex, IconButton } from "@chakra-ui/react";
 import { Skeleton } from "./ui/skeleton";
 import { FaExpandArrowsAlt } from "react-icons/fa";
 import React from "react";
+import { addToFavorites, removeFromFavorites } from "../reduxs/actions/apis/ProductAction";
+import { useDispatch, useSelector } from "react-redux";
+import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
 
 const ProductsCards = ({ products, loading }) => {
+  const dispatch = useDispatch();
+  const { favorites } = useSelector((state) => state.products);
+
   return (
     <Skeleton asChild loading={loading} overflow={"hidden"}>
       <Box
@@ -38,19 +44,38 @@ const ProductsCards = ({ products, loading }) => {
           {products.brand} {` `} {products.name}
         </Text>
 
-        <Badge px={"2"} colorPalette={"cyan"}>
-          {products.category}
-        </Badge>
-
-        <Text lineClamp={1} fontSize={"md"} fontWeight={"normal"} mt={"2"}>
+        <Text lineClamp={2} fontSize={"md"} fontWeight={"normal"} mt={"2"}>
           {products.subtitle}
         </Text>
 
         <Flex justify={"space-between"} gapX={"2"} alignItems={"center"} mt={"2"}>
-          <IconButton color={"gray.900"} bgColor={"gray.100"} mt={"2"}>
-            <FaExpandArrowsAlt size={"10"} />
-          </IconButton>
+          <Badge px={"2"} colorPalette={"cyan"}>
+            {products.category}
+          </Badge>
           <Text color={"cyan.600"}>${products.price}</Text>
+        </Flex>
+
+        <Flex justify={"space-between"} alignItems={"center"} mt={"2"}>
+          {favorites.includes(products._id) ? (
+            <IconButton
+              variant={"ghost"}
+              size={"sm"}
+              bgColor={"blue.400"}
+              onClick={() => dispatch(removeFromFavorites(products._id))}>
+              <MdFavorite size={"20px"} color='black' />
+            </IconButton>
+          ) : (
+            <IconButton
+              variant={"ghost"}
+              sm={"sm"}
+              bgColor={"blue.400"}
+              onClick={() => dispatch(addToFavorites(products._id))}>
+              <MdFavoriteBorder size={"20px"} color='black' />
+            </IconButton>
+          )}
+          <IconButton color={"gray.900"} bgColor={"blue.400"}>
+            <FaExpandArrowsAlt size={"2px"} />
+          </IconButton>
         </Flex>
       </Box>
     </Skeleton>
