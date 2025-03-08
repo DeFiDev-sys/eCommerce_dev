@@ -5,13 +5,16 @@ import {
   setPagination,
   setFavorites,
   setFavoritesToggle,
+  setProduct,
 } from "../../slices/Projects";
 import axios from "axios";
+
+const BaseURL = "http://localhost:5000";
 
 export const getProduct = (page, favoriteToggle) => async (dispatch) => {
   dispatch(setLoading());
   try {
-    const { data } = await axios.get(`http://localhost:5000/api/products/${page}/${10}`);
+    const { data } = await axios.get(`${BaseURL}/api/products/${page}/${10}`);
     const { products, pagination } = data;
     dispatch(setProducts(products));
     dispatch(setPagination(pagination));
@@ -63,6 +66,25 @@ export const toggleFavorites = (toggle) => async (dispatch, getState) => {
   } else {
     dispatch(setFavoritesToggle(false));
     dispatch(getProduct(1));
+  }
+};
+
+export const getProductById = (id) => async (dispatch) => {
+  dispatch(setLoading(true));
+
+  try {
+    const { data } = await axios.get(`${BaseURL}/api/products/${id}`);
+    dispatch(setProduct(data));
+  } catch (error) {
+    dispatch(
+      setError(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+          ? error.message
+          : "An expected has error occured Please try again later"
+      )
+    );
   }
 };
 

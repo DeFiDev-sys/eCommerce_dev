@@ -1,17 +1,19 @@
 import { Box, Badge, Image, Text, Flex, IconButton } from "@chakra-ui/react";
 import { Skeleton } from "./ui/skeleton";
 import { FaExpandArrowsAlt } from "react-icons/fa";
-import React from "react";
+import React, { useState } from "react";
 import { addToFavorites, removeFromFavorites } from "../reduxs/actions/apis/ProductAction";
 import { useDispatch, useSelector } from "react-redux";
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
+import { Link as ReactLink } from "react-router-dom";
 
 const ProductsCards = ({ products, loading }) => {
   const dispatch = useDispatch();
   const { favorites } = useSelector((state) => state.products);
+  const [isShown, setIsShown] = useState(false);
 
   return (
-    <Skeleton asChild loading={loading} overflow={"hidden"}>
+    <Skeleton loading={loading}>
       <Box
         _hover={{ transform: "scale(1.1)", transitionBehavior: "smooth", transitionDuration: "0.5s" }}
         overflow={"hidden"}
@@ -19,7 +21,17 @@ const ProductsCards = ({ products, loading }) => {
         borderWidth={"1px"}
         shadow={"md"}
         mx={"2"}>
-        <Image src={products.images[0]} alt={products.name} height={"200px"} />
+        <Image
+          onMouseEnter={() => {
+            setIsShown(true);
+          }}
+          onMouseLeave={() => {
+            setIsShown(false);
+          }}
+          src={products.images[isShown && products.images.length === 2 ? 1 : 0]}
+          alt={products.name}
+          height={"200px"}
+        />
         {products.stock < 5 ? (
           <Badge px={"2"} colorPalette={"yellow"}>
             only {products.stock} left
@@ -73,7 +85,7 @@ const ProductsCards = ({ products, loading }) => {
               <MdFavoriteBorder size={"20px"} color='black' />
             </IconButton>
           )}
-          <IconButton color={"gray.900"} bgColor={"blue.400"}>
+          <IconButton color={"gray.900"} bgColor={"blue.400"} as={ReactLink} to={`/product/${products._id}`}>
             <FaExpandArrowsAlt size={"2px"} />
           </IconButton>
         </Flex>

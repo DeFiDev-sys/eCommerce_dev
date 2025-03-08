@@ -1,4 +1,4 @@
-import { Box, Button, Center, Wrap, WrapItem } from "@chakra-ui/react";
+import { Alert, Box, Button, Center, Wrap, WrapItem } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import ProductsCards from "../Components/ProductsCards";
 // import { useQuery } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ const ProductsScreen = () => {
   //   refetchOnWindowFocus: false,
   // });
   const dispatch = useDispatch();
-  const { products, loading, pagination, favoritesToggle } = useSelector((state) => state.products);
+  const { products, error, loading, pagination, favoritesToggle } = useSelector((state) => state.products);
 
   useEffect(() => {
     dispatch(getProduct(1));
@@ -30,18 +30,28 @@ const ProductsScreen = () => {
       {products.length >= 1 && (
         <Box>
           <Wrap
-            spacing={"30px"}
+            gap={"30px"}
             justify={"center"}
-            my={"5"}
-            minHeight={"fit"}
+            // my={"5"}
+            minHeight={"80vh"}
             mx={{ base: "1", sm: "12", md: "48", lg: "64" }}>
-            {products.map((product) => (
-              <WrapItem key={product._id}>
-                <Center w={"250px"} h={"450px"}>
-                  <ProductsCards products={product} loading={loading} />
-                </Center>
-              </WrapItem>
-            ))}
+            {error ? (
+              <Alert.Root status='error'>
+                <Alert.Indicator />
+                <Alert.Content>
+                  <Alert.Title>We are sorry! Something went wrong</Alert.Title>
+                  <Alert.Description>{error}</Alert.Description>
+                </Alert.Content>
+              </Alert.Root>
+            ) : (
+              products.map((product) => (
+                <WrapItem key={product._id}>
+                  <Center w={"250px"} h={"450px"}>
+                    <ProductsCards products={product} loading={loading} />
+                  </Center>
+                </WrapItem>
+              ))
+            )}
           </Wrap>
           {!favoritesToggle && (
             <Wrap spacing={"10px"} justify={"center"} p={"5"}>

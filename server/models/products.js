@@ -1,54 +1,82 @@
 import mongoose from "mongoose";
 
-const productScheme = new mongoose.Schema({
-    name : {
-        type:String,
-        require:true
+const reviewScheme = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      require: true,
     },
-    image : {
-        type:Array,
-        require:true,
-        default:[],
+    rating: {
+      type: Number,
+      require: true,
     },
-    brand : {
-        type:String,
-        require:true
+    comment: {
+      type: String,
+      require: true,
     },
-    category : {
-        type:String,
-        require:true
+    title: {
+      type: String,
+      require: true,
     },
-    reviews : {
-        type:Array,
-        require:true,
-        default:[]
+    user: {
+      type: mongoose.Schema.ObjectId,
+      require: true,
+      ref: "User",
     },
-    rating : {
-        type:Number,
-        require:true,
-        default:0,
-    },
-    numberOfReviews : {
-        type:Number,
-        require:true
-    },
-    price : {
-        type:Number,
-        require:true
-    },
-    stock : {
-        type:Number,
-        require:true
-    },
-    productIsNew : {
-        type:Boolean,
-        require:true
-    },
-    stripeId : {
-        type:String,
-    },
-},{timestamps:true} );
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const Product = mongoose.model('Product', productScheme);
+const productScheme = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      require: true,
+    },
+    image: {
+      type: Array,
+      require: true,
+      default: [],
+    },
+    brand: {
+      type: String,
+      require: true,
+    },
+    category: {
+      type: String,
+      require: true,
+    },
+    reviews: [reviewScheme],
+    rating: {
+      type: Number,
+      require: true,
+      default: 0,
+    },
+    numberOfReviews: {
+      type: Number,
+      require: true,
+    },
+    price: {
+      type: Number,
+      require: true,
+    },
+    stock: {
+      type: Number,
+      require: true,
+    },
+    productIsNew: {
+      type: Boolean,
+      require: true,
+    },
+    stripeId: {
+      type: String,
+    },
+  },
+  { timestamps: true }
+);
+
+const Product = mongoose.model("Product", productScheme);
 
 export default Product;
