@@ -25,6 +25,7 @@ To install the necessary dependencies, run:
 
 ```bash
 npm install
+pnpm install
 ```
 
 ## Running the Application

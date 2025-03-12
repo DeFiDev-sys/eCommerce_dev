@@ -4,10 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { getProductById } from "../reduxs/actions/apis/ProductAction";
 import {
   Alert,
-  AlertContent,
-  AlertDescription,
-  AlertIndicator,
-  AlertTitle,
   Badge,
   Box,
   Button,
@@ -23,11 +19,15 @@ import {
 } from "@chakra-ui/react";
 import Star from "../Components/Star";
 import { BiCheckShield, BiMinus, BiPackage, BiPlus, BiSupport } from "react-icons/bi";
+import { addCartItem } from "../reduxs/actions/apis/CartActions";
+import { Toaster, toaster } from "../Components/ui/toaster";
+
 const ProductScreen = () => {
   const [amount, setAmount] = useState(1);
   const { id } = useParams();
   const dispatch = useDispatch();
   const { loading, error, product } = useSelector((state) => state.products);
+  const { cartItems } = useSelector((state) => state.cart);
 
   useEffect(() => {
     dispatch(getProductById(id));
@@ -40,6 +40,20 @@ const ProductScreen = () => {
     if (input === "minus") {
       setAmount(amount - 1);
     }
+  };
+
+  const addItem = () => {
+    if (cartItems.some((cartItem) => cartItem.id === id)) {
+      cartItems.find((cartItem) => cartItem.id === id);
+      dispatch(addCartItem(id, amount));
+    } else {
+      dispatch(addCartItem(id, amount));
+    }
+    toaster.create({
+      description: "Item has been added",
+      type: "success",
+      duration: 5000,
+    });
   };
 
   return (
@@ -56,13 +70,13 @@ const ProductScreen = () => {
           />
         </Stack>
       ) : error ? (
-        <Alert>
-          <AlertIndicator />
-          <AlertContent>
-            <AlertTitle>We are sorry!</AlertTitle>
-            <AlertDescription>{error}</AlertDescription>
-          </AlertContent>
-        </Alert>
+        <Alert.Root status='error' height={"fit"}>
+          <Alert.Indicator />
+          <Alert.Content>
+            <Alert.Title>We are sorry! An Error Occured</Alert.Title>
+            <Alert.Description>{error}</Alert.Description>
+          </Alert.Content>
+        </Alert.Root>
       ) : (
         product && (
           <Box
@@ -126,7 +140,7 @@ const ProductScreen = () => {
                   <Badge fontSize={"lg"} w={"170px"} textAlign={"center"} colorPalette={"green"}>
                     In Stock: {product.stock}
                   </Badge>
-                  <Button variant={"outline"} disabled={product.stock === 0} colorPalette={"cyan"} onClick={() => {}}>
+                  <Button variant={"outline"} disabled={product.stock === 0} colorPalette={"cyan"} onClick={addItem}>
                     Add to Cart
                   </Button>
 
@@ -134,7 +148,7 @@ const ProductScreen = () => {
                     <Flex alignItems={"center"}>
                       <BiPackage size={"20px"} />
                       <Text fontSize={"sm"} fontWeight={"medium"} ml={"2"}>
-                        Package
+                        Shipped in 2 Days
                       </Text>
                     </Flex>
                     <Flex alignItems={"center"}>
@@ -185,6 +199,7 @@ const ProductScreen = () => {
           </Box>
         )
       )}
+      <Toaster />
     </Wrap>
   );
 };

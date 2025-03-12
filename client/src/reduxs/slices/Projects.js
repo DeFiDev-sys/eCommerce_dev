@@ -6,7 +6,7 @@ export const initialState = {
   products: [],
   product: null,
   pagination: {},
-  favoritesToggle: true,
+  favoritesToggle: false,
   reviewed: false,
   favorites: JSON.parse(localStorage.getItem("favorites")) ?? [],
 };

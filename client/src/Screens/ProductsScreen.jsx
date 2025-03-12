@@ -28,7 +28,7 @@ const ProductsScreen = () => {
   return (
     <>
       {products.length >= 1 && (
-        <Box>
+        <Box mt={"5"}>
           <Wrap
             gap={"30px"}
             justify={"center"}
