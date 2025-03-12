@@ -10,7 +10,6 @@ import {
   Separator,
   Stack,
   Text,
-  VStack,
 } from "@chakra-ui/react";
 import { useColorModeValue as Mode } from "./ui/color-mode";
 import { BsPhoneFlip } from "react-icons/bs";
