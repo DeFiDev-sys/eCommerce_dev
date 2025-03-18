@@ -45,5 +45,5 @@ export const shippingItem = (value) => async (dispatch) => {
 };
 
 export const clearItems = () => async (dispatch) => {
-  dispatch(clearCart);
+  dispatch(clearCart());
 };

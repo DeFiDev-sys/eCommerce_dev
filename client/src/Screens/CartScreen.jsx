@@ -1,14 +1,22 @@
-import { Alert, Box, Flex, Heading, HStack, Link, Spinner, Stack, Wrap } from "@chakra-ui/react";
-import { useSelector } from "react-redux";
+import { Alert, Box, Button, Flex, Heading, HStack, Link, Spinner, Stack, Wrap } from "@chakra-ui/react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link as ReactLink } from "react-router-dom";
 import { useColorModeValue as Mode } from "../Components/ui/color-mode";
 import CartItems from "../Components/CartItems";
 import OrderSummery from "../Components/OrderSummery";
+import { clearItems } from "../reduxs/actions/apis/CartActions";
 
 const CartScreen = () => {
   const { loading, error, cartItems } = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
 
   const getHeadingContent = () => (cartItems.length === 1 ? "(1item)" : `${cartItems.length} items`);
+
+  const clearAllItems = () => {
+    if (cartItems.length >= 1) {
+      dispatch(clearItems());
+    }
+  };
   return (
     <Wrap gap={"30px"} justify={"center"} minHeight={"100vh"}>
       {loading ? (
@@ -46,9 +54,15 @@ const CartScreen = () => {
         <Box px={"4"} py={"8"} w={{ base: "95%", md: "70%", lg: "50%" }}>
           <Stack direction={{ base: "column", md: "row" }} align={{ lg: "flex-start" }} gap={{ base: "8", md: "16" }}>
             <Stack gap={{ base: "8", md: "10" }} flex={"2"}>
-              <Heading fontSize={"2xl"} fontWeight={"bold"}>
-                Shopping Cart
-              </Heading>
+              <Flex direction={"row"} justify={"space-between"}>
+                <Heading fontSize={"2xl"} fontWeight={"bold"}>
+                  Shopping Cart
+                </Heading>
+
+                <Button variant={"solid"} colorPalette={"cyan"} onClick={clearAllItems}>
+                  Clear Items
+                </Button>
+              </Flex>
 
               <Stack gap={"6"}>
                 {cartItems.map((cartItem) => (
@@ -61,7 +75,7 @@ const CartScreen = () => {
 
               <HStack mt={"6"} fontWeight={"semibold"}>
                 <p>or</p>
-                <Link as={ReactLink} to={"./products"} color={Mode("cyan.500", "cyan.200")}>
+                <Link as={ReactLink} to={"/products"} color={Mode("cyan.500", "cyan.200")}>
                   Continue Shopping
                 </Link>
               </HStack>

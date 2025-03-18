@@ -6,6 +6,7 @@ import cors from "cors";
 
 //Routes
 import { productsRoutes } from "./router/productsRoute.js";
+import { userRoutes } from "./router/userRoute.js";
 
 //init server
 connectToDatabase();
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/api/products", productsRoutes);
+app.use("/api/users", userRoutes);
 
 //create port to listen too
 const port = 5000;

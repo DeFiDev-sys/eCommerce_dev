@@ -16,10 +16,11 @@ const ProductsScreen = () => {
   // });
   const dispatch = useDispatch();
   const { products, error, loading, pagination, favoritesToggle } = useSelector((state) => state.products);
+  const { userInfo } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(getProduct(1));
-  }, [dispatch]);
+  }, [dispatch, userInfo]);
 
   const pageinationClickButton = (page) => {
     dispatch(getProduct(page));

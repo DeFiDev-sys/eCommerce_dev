@@ -73,7 +73,7 @@ const Footer = () => (
             </Text>
             <Stack gap={"4"} direction={{ base: "column", sm: "row" }} maxW={{ lg: "360px" }}>
               <Input placeholder='Enter your email' type='email' required />
-              <Button variant={"ghost"} type='submit' flexShrink={"0"} rounded={"lg"}>
+              <Button variant={"solid"} type='submit' flexShrink={"0"} rounded={"lg"}>
                 Subcribe
               </Button>
             </Stack>
