@@ -4,6 +4,7 @@ import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import { sendVerificationEmail } from "../middleware/sendEmailVerification.js";
 import { sendPasswordResetEmail } from "../middleware/sendPasswordResetEmail.js";
+import { protectRoute } from "../middleware/authMiddleware.js";
 
 const userRoutes = express.Router();
 
@@ -79,23 +80,62 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-//verifyEmail
-const verifyEmail = asyncHandler(async (req, res) => {
-  const token = req.headers.authorization.split(" ")[1];
+//Google Login
+const googleLogin = asyncHandler(async (req, res) => {
+  const { googleId, googleImage, name, email } = req.body;
   try {
-    const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
-    const user = await User.findById(decoded.id);
-
+    const user = await User.findOne({ googleId: googleId });
     if (user) {
-      user.active = true;
+      user.fistLogin = false;
       await user.save();
-      res.json("Thanks for activating your account. You can now close this window.");
+      res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        googleImage: user.googleImage,
+        googleId: user.googleId,
+        isAdmin: user.isAdmin,
+        token: genToken(user._id),
+        active: user.active,
+        fistLogin: user.fistLogin,
+        created: user.createdAt,
+      });
     } else {
-      res.status(404).send("User not found");
+      const newUser = await User.create({
+        name,
+        email,
+        googleImage,
+        googleId,
+      });
+      const newToken = genToken(newUser._id);
+
+      sendVerificationEmail(newToken, newUser.name, newUser.email);
+
+      res.json({
+        _id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        googleImage: newUser.googleImage,
+        googleId: newUser.googleId,
+        isAdmin: newUser.isAdmin,
+        token: genToken(newUser._id),
+        active: newUser.active,
+        fistLogin: newUser.fistLogin,
+        created: newUser.createdAt,
+      });
     }
   } catch (error) {
-    res.status(401).send("Email address could not be verified.");
+    res.status(400).send("Something went wrong");
+    throw new Error("Something went wrong while registering, PLease check the info and try again");
   }
+});
+
+//verifyEmail
+const verifyEmail = asyncHandler(async (req, res) => {
+  const user = req.user;
+  user.active = true;
+  await user.save();
+  res.json("Thanks for activating your account. You can now close this window.");
 });
 
 //passwordReset request
@@ -136,8 +176,9 @@ const passwordReset = asyncHandler(async (req, res) => {
 
 userRoutes.route("/login").post(loginUser);
 userRoutes.route("/register").post(registerUser);
-userRoutes.route("/verify-email").get(verifyEmail);
+userRoutes.route("/verify-email").get(protectRoute, verifyEmail);
 userRoutes.route("/password-reset-request").post(passwordResetRequest);
 userRoutes.route("/password-reset").post(passwordReset);
+userRoutes.route("/google-login").post(googleLogin);
 
 export { userRoutes };

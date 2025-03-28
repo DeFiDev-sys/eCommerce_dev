@@ -13,6 +13,7 @@ import {
   Button,
   Alert,
   Spacer,
+  Image,
 } from "@chakra-ui/react";
 import { useColorModeValue as Mode } from "./ui/color-mode";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,11 +24,12 @@ import { BiCart, BiChevronDown, BiLogInCircle, BiUserCheck } from "react-icons/b
 import NavLink from "./NavLink";
 import ColourToggle from "./ColourToggle";
 import FavToggle from "./FavToggle";
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaGoogle } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { LogoutUser } from "../reduxs/actions/apis/UserAction";
 import { toaster } from "../Components/ui/toaster";
+import { googleLogout } from "@react-oauth/google";
 
 const Link = [
   { name: "Products", route: "/products" },
@@ -48,6 +50,7 @@ const Header = () => {
   const [showBanner, setShowBanner] = useState(userInfo ? !userInfo.active : false);
 
   const LogoutHandler = () => {
+    googleLogout();
     dispatch(LogoutUser());
     navigate(redirect);
   };
@@ -132,7 +135,16 @@ const Header = () => {
                 <Menu.Trigger asChild>
                   <Button variant='link' size='sm' rounded={"full"} cursor={"pointer"} minW={"0"}>
                     <HStack>
-                      <BiUserCheck size={"30px"} />
+                      {userInfo.googleImage ? (
+                        <Image
+                          borderRadius={"full"}
+                          boxSize={"40px"}
+                          src={userInfo.googleImage}
+                          referrerPolicy='no-referrer'
+                        />
+                      ) : (
+                        <BiUserCheck size={"30px"} />
+                      )}
                       <BiChevronDown />
                     </HStack>
                   </Button>
@@ -145,6 +157,7 @@ const Header = () => {
                           <Text px={"2"} as={"i"} fontStyle={"italic"}>
                             {userInfo.email}
                           </Text>
+                          {userInfo.googleId && <FaGoogle />}
                         </HStack>
                         <Menu.Separator py={"1"} />
                         <Menu.Item as={ReactLink} to={"/order-history"} cursor={"pointer"}>

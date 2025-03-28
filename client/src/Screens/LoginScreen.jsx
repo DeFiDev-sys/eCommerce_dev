@@ -5,10 +5,13 @@ import * as Yup from "yup";
 import { Toaster, toaster } from "../Components/ui/toaster";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { LoginUser } from "../reduxs/actions/apis/UserAction";
+import { LoginUser, googleLogin } from "../reduxs/actions/apis/UserAction";
 import TextField from "../Components/TextField";
 import PasswordField from "../Components/PasswordField";
 import PassowrdForgettenForm from "../Components/PassowrdForgettenForm";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
+import { FaGoogle } from "react-icons/fa";
 
 const LoginScreen = () => {
   const dispatch = useDispatch();
@@ -39,6 +42,19 @@ const LoginScreen = () => {
       });
     }
   }, [userInfo, location.state, redirect, error, navigate, serverMsg, showPasswordReset]);
+
+  //sign in with google
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (response) => {
+      const userInfo = await axios
+        .get("https://www.googleapis.com/oauth2/v3/userinfo", {
+          headers: { Authorization: `Bearer ${response.access_token}` },
+        })
+        .then((res) => res.data);
+      const { sub, name, email, picture } = userInfo;
+      dispatch(googleLogin(name, email, picture, sub));
+    },
+  });
 
   return (
     <>
@@ -118,9 +134,18 @@ const LoginScreen = () => {
                       {showPasswordReset && <PassowrdForgettenForm />}
                     </FormControl.Root>
                   </Stack>
-                  <Stack gap={""}>
+                  <Stack gap={"4"}>
                     <Button colorPalette={"cyan"} type='submit' size={"lg"} loading={loading}>
                       Sign In
+                    </Button>
+                    <Button
+                      colorPalette={"cyan"}
+                      onClick={() => {
+                        handleGoogleLogin();
+                      }}
+                      size={"lg"}
+                      loading={loading}>
+                      <FaGoogle size={20} /> Google sign in
                     </Button>
                   </Stack>
                 </Stack>

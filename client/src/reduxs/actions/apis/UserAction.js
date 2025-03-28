@@ -13,7 +13,7 @@ import {
 } from "../../slices/UserSlice";
 import { clearCart } from "../../slices/CartSlice";
 
-const BaseURL = "http://localhost:5000";
+export const BaseURL = "http://localhost:5000";
 
 //Login action
 export const LoginUser = (email, password) => async (dispatch) => {
@@ -148,4 +148,29 @@ export const RestPassword = (password, token) => async (dispatch) => {
 //reset state
 export const ResetState = () => async (dispatch) => {
   dispatch(setReset());
+};
+
+//google login
+export const googleLogin = (name, email, googleImage, googleId) => async (dispatch) => {
+  try {
+    const config = { headers: { "Content-Type": "application/json" } };
+
+    const { data } = await axios.post(
+      `${BaseURL}/api/users/google-login`,
+      { name, email, googleImage, googleId },
+      config
+    );
+    dispatch(userLogin(data));
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch(
+      setError(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+          ? error.message
+          : "An expected has error occured Please try again later"
+      )
+    );
+  }
 };

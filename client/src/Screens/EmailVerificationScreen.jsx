@@ -1,7 +1,7 @@
-import { AbsoluteCenter, Alert, Box, Button, Center, Spinner, Text } from "@chakra-ui/react";
+import { AbsoluteCenter, Alert, Box, Center, Spinner, Text } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, Link as ReactLink } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { VerifyEmail } from "../reduxs/actions/apis/UserAction";
 
 const EmailVerificationScreen = () => {

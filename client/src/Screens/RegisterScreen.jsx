@@ -16,9 +16,12 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { toaster } from "../Components/ui/toaster";
 import { useDispatch, useSelector } from "react-redux";
-import { RegisterUser } from "../reduxs/actions/apis/UserAction";
+import { googleLogin, RegisterUser } from "../reduxs/actions/apis/UserAction";
 import TextField from "../Components/TextField";
 import PasswordField from "../Components/PasswordField";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
+import { FaGoogle } from "react-icons/fa";
 
 const RegisterScreen = () => {
   const navigate = useNavigate();
@@ -38,6 +41,19 @@ const RegisterScreen = () => {
       });
     }
   }, [navigate, dispatch, redirect, userInfo]);
+
+  //sign in with google
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (response) => {
+      const userInfo = await axios
+        .get("https://www.googleapis.com/oauth2/v3/userinfo", {
+          headers: { Authorization: `Bearer ${response.access_token}` },
+        })
+        .then((res) => res.data);
+      const { sub, name, email, picture } = userInfo;
+      dispatch(googleLogin(name, email, picture, sub));
+    },
+  });
   return (
     <Formik
       initialValues={{ name: "", email: "", password: "" }}
@@ -108,9 +124,21 @@ const RegisterScreen = () => {
                     />
                   </FormControl.Root>
                 </Stack>
-                <Stack gap={"6"}>
+                <Stack gap={"4"}>
                   <Button colorPalette='cyan' size='lg' fontSize='md' loading={loading} type='submit'>
                     Sign up
+                  </Button>
+
+                  <Text textAlign={"center"}>Or</Text>
+
+                  <Button
+                    colorPalette={"cyan"}
+                    onClick={() => {
+                      handleGoogleLogin();
+                    }}
+                    size={"lg"}
+                    loading={loading}>
+                    <FaGoogle size={20} /> Google sign in
                   </Button>
                 </Stack>
               </Stack>

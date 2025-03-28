@@ -17,6 +17,11 @@ app.use(cors());
 app.use("/api/products", productsRoutes);
 app.use("/api/users", userRoutes);
 
+//send a google clent id res through an api
+app.get("/api/config/google", (req, res) => {
+  res.send(process.env.GOOGLE_CLIENT_ID);
+});
+
 //create port to listen too
 const port = 5000;
 
